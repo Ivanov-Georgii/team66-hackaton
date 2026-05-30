@@ -42,45 +42,61 @@ class Classifier:
         self.names = {category: category for category in self.categories}
         self.names["other"] = "прочее"
 
-    def extract_words(self, text: str) -> set:
-        words = re.findall(r'\b[а-яa-z]{3,}\b', text.lower())
-        return set(words)
+    def extract_words(self, text: str) -> list:
+        words = re.findall(r'[а-яa-z]{3,}', text.lower())
+        return list(words)
 
-    def calculate_category_score(self, categoryName: str, words: set) -> tuple:
+    def calculate_word_score(self, word: str, categoryName: str) -> tuple:
         categoryData = self.categories.get(categoryName, {})
-        keySignals = set(categoryData.get("ключевые сигналы", []))
-        regularSignals = set(categoryData.get("обычные сигналы", []))
-        antiSignals = set(categoryData.get("антисигналы", []))
+        for signal in categoryData.get("ключевые сигналы", []):
+            if signal in word:
+                return self.weights["ключевые сигналы"], "ключевые", signal
+
+        for signal in categoryData.get("обычные сигналы", []):
+            if signal in word:
+                return self.weights["обычные сигналы"], "обычные", signal
+
+        for signal in categoryData.get("антисигналы", []):
+            if signal in word:
+                return self.weights["антисигналы"], "анти", signal
+        return 0, None, None
+
+    def calculate_category_score(self, categoryName: str, subjectWords: list, bodyWords: list) -> tuple:
         matchedKey = []
         matchedRegular = []
         matchedAnti = []
+        score = 0
 
-        for word in words:
-            for signal in keySignals:
-                if signal in word:
+        for word in subjectWords:
+            wordScore, signalType, signal = self.calculate_word_score(word, categoryName)
+            if wordScore > 0:
+                score += wordScore * 2
+                if signalType == "ключевые":
                     matchedKey.append(signal)
-                    break
-            for signal in regularSignals:
-                if signal in word:
+                elif signalType == "обычные":
                     matchedRegular.append(signal)
-                    break
-            for signal in antiSignals:
-                if signal in word:
+                elif signalType == "анти":
                     matchedAnti.append(signal)
-                    break
 
-        score = (len(matchedKey) * self.weights["ключевые сигналы"] +
-                 len(matchedRegular) * self.weights["обычные сигналы"] +
-                 len(matchedAnti) * self.weights["антисигналы"])
+        for word in bodyWords:
+            wordScore, signalType, signal = self.calculate_word_score(word, categoryName)
+            if wordScore > 0:
+                score += wordScore * 1
+                if signalType == "ключевые":
+                    matchedKey.append(signal)
+                elif signalType == "обычные":
+                    matchedRegular.append(signal)
+                elif signalType == "анти":
+                    matchedAnti.append(signal)
 
         return score, matchedKey, matchedRegular, matchedAnti
 
     def classify(self, subject: str = "", body: str = "") -> tuple:
-        text = subject + " " + body
-        words = self.extract_words(text)
+        subjectWords = self.extract_words(subject)
+        bodyWords = self.extract_words(body)
         for priorityCategory in self.priorityCategories:
             if priorityCategory in self.categories:
-                score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(priorityCategory, words)
+                score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(priorityCategory,subjectWords, bodyWords)
                 if score >= self.minscore:
                     details = {
                         priorityCategory: {
@@ -96,8 +112,8 @@ class Classifier:
         for categoryName in self.categories:
             if categoryName in self.priorityCategories:
                 continue
-            score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(categoryName, words)
-            if score != 0:
+            score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(categoryName, subjectWords, bodyWords)
+            if score > 0:
                 scores[categoryName] = score
                 details[categoryName] = {
                     "ключевые сигналы": matchedKey,
