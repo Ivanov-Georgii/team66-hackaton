@@ -84,7 +84,7 @@ class Classifier:
             score += wordScore * 1
         return score
 
-    def classify(self, subject: str = "", body: str = "") -> str:
+    def classify(self, subject: str = "", body: str = "", sender: str = "") -> str:
         subjectWords = self.extract_words(subject)
         bodyWords = self.extract_words(body)
         for priorityCategory in self.priorityCategories:

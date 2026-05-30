@@ -1,5 +1,6 @@
 from FileReader import *
 from Settings import *
+from Classifier import *
 
 settings = Settings()
 settings.Settings()
@@ -9,6 +10,9 @@ if not pathFile.exists():
     print("Ошибка: файл с путём не найден, запустите настройку")
 else:
     inboxPath = pathFile.read_text(encoding="utf-8").strip()
-data = FileReader(inboxPath)
-
-print(data.read_files())
+    data = FileReader(inboxPath).read_files()
+    classifier = Classifier()
+    for email in data:
+        filePath = Path(inboxPath) / data[3][1]
+        category = classifier.classify(data[0][1], data[2][1], data[1][1])
+        classifier.move_file_to_category(filePath, category)

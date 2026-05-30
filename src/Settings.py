@@ -72,7 +72,7 @@ class Settings:
                                 print(i+1, ") ", emails[i], sep="")
                     elif userChoise2 == "2":
                         print("Введите email-адрес для добавления: ")
-                        newEmail = input().strip()
+                        newEmail = input().strip().lower()
                         if "@" not in newEmail or "." not in newEmail:
                             print("Ошибка: некорректный формат email")
                         elif newEmail in emails:
