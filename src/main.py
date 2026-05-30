@@ -13,6 +13,6 @@ else:
     data = FileReader(inboxPath).read_files()
     classifier = Classifier()
     for email in data:
-        filePath = Path(inboxPath) / data[3][1]
-        category = classifier.classify(data[0][1], data[2][1], data[1][1])
+        filePath = Path(inboxPath) / email[3][1]
+        category = classifier.classify(email[0][1], email[2][1], email[1][1])
         classifier.move_file_to_category(filePath, category)

@@ -7,11 +7,11 @@ class Classifier:
         self.weights = {"ключевые сигналы": 2, "обычные сигналы": 1, "антисигналы": -1}
         self.minscore = 3
         self.pathCat = {
-            "инциденты": Path("../SortedInbox/Incidence"),
+            "инциденты": Path("../SortedInbox/Incidents"),
             "автоответчики/noreply сообщения": Path("../SortedInbox/Noreply"),
             "спам": Path("../SortedInbox/Spam"),
             "вопросы/просьбы": Path("../SortedInbox/Questions"),
-            "безопасность": Path("../SortedInbox/Sequrity"),
+            "безопасность": Path("../SortedInbox/Seсurity"),
             "важное": Path("../SortedInbox/Important"),
             "прочее": Path("../SortedInbox/Other")
         }
