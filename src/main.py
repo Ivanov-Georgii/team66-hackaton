@@ -1,5 +1,9 @@
-from FileReader import*
+from FileReader import *
+from Settings import *
 
-data = FileReader("/Users/georgiy/Desktop/Хакатон/inbox") #Ссылка с файла пользователя
+settings = Settings()
+settings.Settings()
+
+data = FileReader("/Users/georgiy/Desktop/Хакатон/inbox")
 
 print(data.read_files())
