@@ -37,6 +37,3 @@ class FileReader:
             except:
                 print("Пропускаю:", file.name)
 
-data = FileReader("/Users/georgiy/Desktop/Хакатон/inbox") #Ссылка с файла пользователя
-
-data.read_files()
