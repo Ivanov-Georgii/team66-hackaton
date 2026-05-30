@@ -18,8 +18,8 @@ class Classifier:
         self.categories = {
             "инциденты": {
                 "ключевые сигналы": [
-                    "инцидент", "сбой", "недоступ", "ошибк", "упал", "критич",
-                    "авари", "краш", "срочно", "перегруз", "массов", "останов"
+                    "инцидент", "сбой", "недоступ", "упал", "критич", "останов"
+                    "авари", "краш", "срочно", "перегруз", "массов"
                 ],
                 "обычные сигналы": [
                     "останов", "неоткрыва", "неработа", "слома", "тормоз"
@@ -52,8 +52,7 @@ class Classifier:
             },
             "автоответчики/noreply сообщения": {
                 "ключевые сигналы": [
-                    "noreply", "autoreply", "сгенерирован", "автоответ",
-                    "неотвечать", "рассылк", "no-reply"
+                    "сгенерирован", "автоответ", "неотвечать", "рассылк"
                 ],
                 "обычные сигналы": [
                     "автоматическ", "уведомлени", "notification", "заказ",
@@ -112,6 +111,8 @@ class Classifier:
     def classify(self, subject: str = "", body: str = "", sender: str = "") -> str:
         if sender in self.whitelist:
             return "важное"
+        if "noreply" in sender or "no-reply" in sender:
+            return "автоответчики/noreply сообщения"
         subjectWords = self.extract_words(subject)
         bodyWords = self.extract_words(body)
         for priorityCategory in self.priorityCategories:
