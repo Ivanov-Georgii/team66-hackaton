@@ -4,6 +4,11 @@ import shutil
 
 class Classifier:
     def __init__(self):
+        self.incidents = Path("../SortedInbox/Incidence")
+        self.noreply = Path("../SortedInbox/Noreply")
+        self.questions = Path("../SortedInbox/Questions")
+        self.security = Path("../SortedInbox/Security")
+        self.spam = Path("../SortedInbox/Spam")
         self.weights = {"ключевые сигналы": 2, "обычные сигналы": 1, "антисигналы": -1}
         self.minscore = 3
         self.pathCat = {
@@ -11,8 +16,8 @@ class Classifier:
             "автоответчики/noreply сообщения": Path("../SortedInbox/Noreply"),
             "спам": Path("../SortedInbox/Spam"),
             "вопросы/просьбы": Path("../SortedInbox/Questions"),
-            "безопасность": Path("../SortedInbox/Sequrity"),
-            "важное": Path("../SortedInbox/Important")
+            "безопасность": Path("../SortedInbox/Security"),
+            "важное": Path("../SortedInbox/Incidence")
         }
         self.categories = {
             "инциденты": {
@@ -49,11 +54,10 @@ class Classifier:
         }
 
         self.priorityCategories = ["спам", "автоответчики/noreply сообщения"]
-        self.names = {category: category for category in self.categories}
-        self.names["other"] = "прочее"
 
     def extract_words(self, text: str) -> list:
-        words = re.findall(r'[а-яa-z]{3,}', text.lower())
+        text = text.lower().replace('ё', 'е')
+        words = re.findall(r'[а-яa-z]{3,}', text)
         return list(words)
 
     def calculate_word_score(self, word: str, categoryName: str) -> tuple:
@@ -138,6 +142,6 @@ class Classifier:
         if bestScore < self.minscore:
             return "прочее", scores, bestScore, details
         return bestCategory, scores, bestScore, details
-#shutil.move(str(file), str(self.Incidents / file.name))
+
     def get_category_name(self, categoryKey: str) -> str:
-        return self.names.get(categoryKey, categoryKey)
+        return categoryKey
