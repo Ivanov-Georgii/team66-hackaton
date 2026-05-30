@@ -22,3 +22,20 @@ class Cleaner:
                 continue
             file.unlink()
         print("Корзина очищена")
+
+    def cleaner(self):
+        while True:
+            print("Введите номер желаемого действия: ")
+            print(" (1) Переместить отсортированный ящик в корзину")
+            print(" (2) Очистить корзину")
+            print(" (3) Назад")
+            userChoise = input()
+
+            if userChoise == "1":
+                self.clean()
+            elif userChoise == "2":
+                self.empty_trash()
+            elif userChoise == "3":
+                break
+            else:
+                print("Ошибка. Неверный формат ввода, пишите только цифру от 1 до 3")
