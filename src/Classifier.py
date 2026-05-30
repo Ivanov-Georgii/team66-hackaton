@@ -4,11 +4,6 @@ import shutil
 
 class Classifier:
     def __init__(self):
-        self.incidents = Path("../SortedInbox/Incidence")
-        self.noreply = Path("../SortedInbox/Noreply")
-        self.questions = Path("../SortedInbox/Questions")
-        self.security = Path("../SortedInbox/Security")
-        self.spam = Path("../SortedInbox/Spam")
         self.weights = {"ключевые сигналы": 2, "обычные сигналы": 1, "антисигналы": -1}
         self.minscore = 3
         self.pathCat = {
@@ -16,8 +11,9 @@ class Classifier:
             "автоответчики/noreply сообщения": Path("../SortedInbox/Noreply"),
             "спам": Path("../SortedInbox/Spam"),
             "вопросы/просьбы": Path("../SortedInbox/Questions"),
-            "безопасность": Path("../SortedInbox/Security"),
-            "важное": Path("../SortedInbox/Incidence")
+            "безопасность": Path("../SortedInbox/Sequrity"),
+            "важное": Path("../SortedInbox/Important"),
+            "прочее": Path("../SortedInbox/Other")
         }
         self.categories = {
             "инциденты": {
@@ -29,8 +25,8 @@ class Classifier:
                 "ключевые сигналы": ["акци", "скидк", "бесплатно", "выиграл", "реклам"],
                 "обычные сигналы": ["купить", "успей", "предложени", "распродаж", "инвестици", "заработ", "криптовалют",
                                     "биткоин"],
-                "антисигналы": ["проект", "задач", "дедлайн", "отчёт", "работ", "коллег", "встреч", "бизнес", "клиент",
-                                "договор", "счёт", "налог", "помоги", "вопрос", "ошибк", "баг"]
+                "антисигналы": ["проект", "задач", "дедлайн", "отчет", "работ", "коллег", "встреч", "бизнес", "клиент",
+                                "договор", "счет", "налог", "помоги", "вопрос", "ошибк", "баг"]
             },
             "вопросы/просьбы": {
                 "ключевые сигналы": ["помоги", "подскажи", "нужна помощь", "просьб"],
@@ -47,12 +43,11 @@ class Classifier:
             },
             "безопасность": {
                 "ключевые сигналы": ["парол", "взлом", "утечк", "фишинг"],
-                "обычные сигналы": ["безопасность", "подозрительн", "несанкционированн", "доступ", "учётная запись",
+                "обычные сигналы": ["безопасность", "подозрительн", "несанкционированн", "доступ", "учетная запись",
                                     "вирус", "вредоносн"],
-                "антисигналы": ["проект", "задач", "помоги", "вопрос", "отчёт"]
+                "антисигналы": ["проект", "задач", "помоги", "вопрос", "отчет"]
             }
         }
-
         self.priorityCategories = ["спам", "автоответчики/noreply сообщения"]
 
     def extract_words(self, text: str) -> list:
@@ -60,88 +55,56 @@ class Classifier:
         words = re.findall(r'[а-яa-z]{3,}', text)
         return list(words)
 
-    def calculate_word_score(self, word: str, categoryName: str) -> tuple:
+    def calculate_word_score(self, word: str, categoryName: str) -> int:
         categoryData = self.categories.get(categoryName, {})
         for signal in categoryData.get("ключевые сигналы", []):
             if signal in word:
-                return self.weights["ключевые сигналы"], "ключевые", signal
+                return self.weights["ключевые сигналы"]
 
         for signal in categoryData.get("обычные сигналы", []):
             if signal in word:
-                return self.weights["обычные сигналы"], "обычные", signal
+                return self.weights["обычные сигналы"]
 
         for signal in categoryData.get("антисигналы", []):
             if signal in word:
-                return self.weights["антисигналы"], "анти", signal
-        return 0, None, None
+                return self.weights["антисигналы"]
+        return 0
 
-    def calculate_category_score(self, categoryName: str, subjectWords: list, bodyWords: list) -> tuple:
-        matchedKey = []
-        matchedRegular = []
-        matchedAnti = []
+    def calculate_category_score(self, categoryName: str, subjectWords: list, bodyWords: list) -> int:
         score = 0
-
         for word in subjectWords:
-            wordScore, signalType, signal = self.calculate_word_score(word, categoryName)
-            if wordScore > 0:
-                score += wordScore * 2
-                if signalType == "ключевые":
-                    matchedKey.append(signal)
-                elif signalType == "обычные":
-                    matchedRegular.append(signal)
-                elif signalType == "анти":
-                    matchedAnti.append(signal)
-
+            wordScore = self.calculate_word_score(word, categoryName)
+            score += wordScore * 2
         for word in bodyWords:
-            wordScore, signalType, signal = self.calculate_word_score(word, categoryName)
-            if wordScore > 0:
-                score += wordScore * 1
-                if signalType == "ключевые":
-                    matchedKey.append(signal)
-                elif signalType == "обычные":
-                    matchedRegular.append(signal)
-                elif signalType == "анти":
-                    matchedAnti.append(signal)
+            wordScore = self.calculate_word_score(word, categoryName)
+            score += wordScore * 1
+        return score
 
-        return score, matchedKey, matchedRegular, matchedAnti
-
-    def classify(self, subject: str = "", body: str = "") -> tuple:
+    def classify(self, subject: str = "", body: str = "") -> str:
         subjectWords = self.extract_words(subject)
         bodyWords = self.extract_words(body)
         for priorityCategory in self.priorityCategories:
             if priorityCategory in self.categories:
-                score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(priorityCategory,subjectWords, bodyWords)
+                score = self.calculate_category_score(priorityCategory,subjectWords, bodyWords)
                 if score >= self.minscore:
-                    details = {
-                        priorityCategory: {
-                            "ключевые сигналы": matchedKey,
-                            "обычные сигналы": matchedRegular,
-                            "антисигналы": matchedAnti
-                        }
-                    }
-                    return priorityCategory, {priorityCategory: score}, score, details
+                    return priorityCategory
 
         scores = {}
-        details = {}
         for categoryName in self.categories:
             if categoryName in self.priorityCategories:
                 continue
-            score, matchedKey, matchedRegular, matchedAnti = self.calculate_category_score(categoryName, subjectWords, bodyWords)
+            score = self.calculate_category_score(categoryName, subjectWords, bodyWords)
             if score > 0:
                 scores[categoryName] = score
-                details[categoryName] = {
-                    "ключевые сигналы": matchedKey,
-                    "обычные сигналы": matchedRegular,
-                    "антисигналы": matchedAnti
-                }
         if not scores:
-            return "прочее", {}, 0, {}
+            return "прочее"
 
         bestCategory = max(scores.keys(), key=lambda c: scores[c])
         bestScore = scores[bestCategory]
         if bestScore < self.minscore:
-            return "прочее", scores, bestScore, details
-        return bestCategory, scores, bestScore, details
+            return "прочее"
+        return bestCategory
 
+#shutil.move(str(file), str(self.Incidents / file.name))
     def get_category_name(self, categoryKey: str) -> str:
         return categoryKey
