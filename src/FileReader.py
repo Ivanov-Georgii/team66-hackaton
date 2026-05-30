@@ -32,7 +32,7 @@ class FileReader:
                             bodyStart = count
                             iterSubject = True
                         if ((line.find("From: "))==0 or (line.find("От кого: "))==0) and iterAdress == False:
-                            importantInfo[1]=("From", line[line.find(":")+1:])
+                            importantInfo[1]=("From", line[line.find("<")+1:line.find(">")])
                             firstIterAdress = line
                             bodyStart = count
                             iterAdress = True
