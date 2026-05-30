@@ -48,6 +48,12 @@ class Classifier:
             }
         }
         self.priorityCategories = ["спам", "автоответчики/noreply сообщения"]
+        self.whitelist = []
+        whitelistPath = Path("../UserInfo/white_list.txt")
+        lines = whitelistPath.read_text(encoding="utf-8").splitlines()
+        for line in lines:
+            if line.strip() != "":
+                self.whitelist.append(line.strip())
 
     def extract_words(self, text: str) -> list:
         text = text.lower().replace('ё', 'е')
@@ -85,6 +91,8 @@ class Classifier:
         return score
 
     def classify(self, subject: str = "", body: str = "", sender: str = "") -> str:
+        if sender in self.whitelist:
+            return "важное"
         subjectWords = self.extract_words(subject)
         bodyWords = self.extract_words(body)
         for priorityCategory in self.priorityCategories:
