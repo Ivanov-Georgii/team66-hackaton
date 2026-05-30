@@ -13,8 +13,6 @@ class FileReader:
                 continue
             try:
                 text = file.read_text()
-                firstIterSub = ""
-                firstIterAdress = ""
                 iterSubject = False
                 iterAdress = False
                 importantInfo = [[],[],[],[]]
@@ -48,8 +46,7 @@ class FileReader:
                 if not iterAdress:
                     shutil.move(str(file), str(self.unreadable / file.name))
                     print("отправляю файл "+file.name+" в битое")
-                if body:
-                    importantInfo[2]=("Body",body)
+                    continue
                 data.append(importantInfo)
             except:
                 print("Пропускаю:", file.name)

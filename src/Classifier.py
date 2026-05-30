@@ -109,6 +109,6 @@ class Classifier:
             return "прочее"
         return bestCategory
 
-#shutil.move(str(file), str(self.Incidents / file.name))
-    def get_category_name(self, categoryKey: str) -> str:
-        return categoryKey
+    def move_file_to_category(self, filePath: Path, categoryKey: str):
+        targetFolder = self.pathCat.get(categoryKey, self.pathCat["прочее"])
+        shutil.move(str(filePath), str(targetFolder))
