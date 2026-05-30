@@ -142,3 +142,4 @@ class Classifier:
     def move_file_to_category(self, filePath: Path, categoryKey: str):
         targetFolder = self.pathCat.get(categoryKey, self.pathCat["прочее"])
         shutil.move(str(filePath), str(targetFolder))
+        print("Файл " + file.name + " отправлен в " + categoryKey)

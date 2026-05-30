@@ -48,11 +48,11 @@ class FileReader:
                 importantInfo[3]=("Name",file.name)
                 if not iterAdress:
                     shutil.move(str(file), str(self.unreadable / file.name))
-                    print("отправляю файл "+file.name+" в битое")
+                    print("Файл "+file.name+" отправлен в несортируемые")
                     continue
                 data.append(importantInfo)
             except:
-                print("Пропускаю:", file.name)
+                print("Файл "+file.name+" отправлен в несортируемые")
                 try:
                     file.rename(self.unreadable / file.name)
                 except:
