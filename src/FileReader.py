@@ -25,12 +25,15 @@ class FileReader:
                         continue
                     else:
                         count+=1
-                        if (line.find("subject:")==0 or line.find("тема:")==0 or line.find("tema:")==0) and iterSubject == False:
-                            importantInfo[0]=("Subject", line[line.find(":")+1:])
+                        if (line.find("subject:") == 0 or line.find("тема:") == 0 or line.find("tema:") == 0) and iterSubject == False:
+                            importantInfo[0] = ("Subject", line[line.find(":") + 1:])
                             bodyStart = count
                             iterSubject = True
-                        if (line.find("from:")==0 or line.find("от кого:")==0 or line.find("ot kogo:")==0) and iterAdress == False:
-                            importantInfo[1]=("From", line[line.find("<")+1:line.find(">")])
+                        if (line.find("from:") == 0 or line.find("от кого:") == 0 or line.find("ot kogo:") == 0) and iterAdress == False:
+                            if line.count("<") > 0:
+                                importantInfo[1] = ("From", line[line.find("<") + 1: line.find(">")])
+                            else:
+                                importantInfo[1] = ("From", line[line.find(":") + 1:])
                             bodyStart = count
                             iterAdress = True
                 if not iterSubject:
@@ -44,15 +47,15 @@ class FileReader:
                         bodyStart -= 1
                         if bodyStart<0:
                             body+=line+" "
-                importantInfo[2]=("Body",body)
-                importantInfo[3]=("Name",file.name)
+                importantInfo[2] = ("Body",body)
+                importantInfo[3] = ("Name",file.name)
                 if not iterAdress:
                     shutil.move(str(file), str(self.unreadable / file.name))
-                    print("Файл "+file.name+" отправлен в несортируемые")
+                    print("Файл " + file.name + " отправлен в несортируемые")
                     continue
                 data.append(importantInfo)
             except:
-                print("Файл "+file.name+" отправлен в несортируемые")
+                print("Файл " + file.name + " отправлен в несортируемые")
                 try:
                     file.rename(self.unreadable / file.name)
                 except:
