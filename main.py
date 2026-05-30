@@ -1,7 +1,0 @@
-print("Sergey")
-print("Ivan")
-print("Artem")
-print("Nastya")
-print(123)
-print(123123123)
-print("Goshan1")
