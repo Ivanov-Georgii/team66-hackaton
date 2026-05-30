@@ -17,7 +17,7 @@ class FileReader:
                 firstIterAdress = ""
                 iterSubject = False
                 iterAdress = False
-                importantInfo = [[],[],[]]
+                importantInfo = [[],[],[],[]]
                 bodyStart = -1
                 count = 0
                 body = ""
@@ -44,6 +44,7 @@ class FileReader:
                         if bodyStart<0:
                             body+=line+" "
                 importantInfo[2]=("Body",body)
+                importantInfo[3]=("Name",file.name)
                 if not iterAdress:
                     shutil.move(str(file), str(self.unreadable / file.name))
                     print("отправляю файл "+file.name+" в битое")
