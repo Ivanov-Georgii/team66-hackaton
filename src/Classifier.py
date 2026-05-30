@@ -139,7 +139,7 @@ class Classifier:
             return "прочее"
         return bestCategory
 
-    def move_file_to_category(self, filePath: Path, categoryKey: str):
+    def move_file_to_category(self, filePath: Path, categoryKey: str, name:str):
         targetFolder = self.pathCat.get(categoryKey, self.pathCat["прочее"])
         shutil.move(str(filePath), str(targetFolder))
-        print("Файл " + file.name + " отправлен в " + categoryKey)
+        print("Файл " + name + " отправлен в " + categoryKey)

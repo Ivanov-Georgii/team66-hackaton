@@ -24,7 +24,7 @@ while True:
             for email in data:
                 filePath = Path(inboxPath) / email[3][1]
                 category = classifier.classify(email[0][1], email[2][1], email[1][1])
-                classifier.move_file_to_category(filePath, category)
+                classifier.move_file_to_category(filePath, category, email[3][1])
             print("Сортировка завершена")
 
     elif userChoise == "2":
