@@ -1,10 +1,11 @@
 from pathlib import Path
+import shutil
 
 class FileReader:
 
     def __init__(self, folder):
         self.folder = Path(folder)
-
+        self.unreadable = Path("../SortedInbox/Unreadable")
     def read_files(self):
         data = []
         for file in self.folder.iterdir():
@@ -44,10 +45,15 @@ class FileReader:
                             body+=line+" "
                 importantInfo[2]=("Body",body)
                 if not iterAdress:
-                    print("отправить файл в битое")
+                    shutil.move(str(file), str(self.unreadable / file.name))
+                    print("отправляю файл "+file.name+" в битое")
                 if body:
                     importantInfo[2]=("Body",body)
                 data.append(importantInfo)
             except:
                 print("Пропускаю:", file.name)
+                try:
+                    file.rename(self.unreadable / file.name)
+                except:
+                    pass
         return data
