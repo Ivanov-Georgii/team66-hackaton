@@ -4,11 +4,6 @@ import shutil
 
 class Classifier:
     def __init__(self):
-        self.incidents = Path("../SortedInbox/Incidence")
-        self.noreply = Path("../SortedInbox/Noreply")
-        self.questions = Path("../SortedInbox/Questions")
-        self.sequrity = Path("../SortedInbox/Sequrity")
-        self.spam = Path("../SortedInbox/Spam")
         self.weights = {"ключевые сигналы": 2, "обычные сигналы": 1, "антисигналы": -1}
         self.minscore = 3
         self.pathCat = {
@@ -17,7 +12,7 @@ class Classifier:
             "спам": Path("../SortedInbox/Spam"),
             "вопросы/просьбы": Path("../SortedInbox/Questions"),
             "безопасность": Path("../SortedInbox/Sequrity"),
-            "важное": Path("../SortedInbox/Incidence")
+            "важное": Path("../SortedInbox/Important")
         }
         self.categories = {
             "инциденты": {
