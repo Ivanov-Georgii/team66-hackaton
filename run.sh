@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 echo "Добро пожаловать в автоматизированную систему обработки корпоративной почты"
 echo ""
 echo "Требуется ли установка pytest?"
@@ -28,7 +28,7 @@ echo "Показать отчет по сортировке?"
 echo "1) Да"
 echo "2) Нет"
 read ans
-if [ "$ans"="1" ]; then
+if [ "$ans" = "1" ]; then
   important=$(find SortedInbox/Important -type f | wc -l)
   incidents=$(find SortedInbox/Incidents -type f | wc -l)
   noreply=$(find SortedInbox/Noreply -type f | wc -l)
