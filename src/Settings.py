@@ -106,8 +106,7 @@ class Settings:
                         else:
                             emails.append(newEmail)
                             print("Адрес добавлен: " + newEmail)
-                            logging.info("Адрес добавлен, текущий белый список: ")
-                            logging.info(*emails)
+                            logging.info("Адрес добавлен, белый список: " + ", ".join(emails))
                     elif userChoise2 == "3":
                         logging.info("Пользователь выбрал '(3) Удалить адрес'")
                         if len(emails) == 0:
@@ -123,8 +122,7 @@ class Settings:
                             if userChoise3.isdigit() and 1 <= int(userChoise3) <= len(emails):
                                 removedEmail = emails.pop(int(userChoise3)-1)
                                 print("Адрес удалён: " + removedEmail)
-                                logging.info("Адрес удалён, текущий белый список: ")
-                                logging.info(*emails)
+                                logging.info("Адрес удалён, белый список: " + ", ".join(emails))
                     elif userChoise2 == "4":
                         logging.info("Пользователь выбрал '(4) Назад'")
                         result = ""
@@ -134,8 +132,7 @@ class Settings:
                             else:
                                 result = result + emails[i]
                         pathWhiteList.write_text(result, encoding="utf-8")
-                        logging.info("Итоговый белый список был записан в файл: ")
-                        logging.info(*emails)
+                        logging.info("Итоговый белый список: " + ", ".join(emails))
                         break
 
             elif userChoise == "3":
