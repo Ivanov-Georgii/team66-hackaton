@@ -3,6 +3,9 @@ from Settings import *
 from Classifier import *
 from Cleaner import *
 from pathlib import *
+import logging
+
+logging.basicConfig(filename="../Logs/run.log", encoding="utf-8", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
 print("Здравствуйте, программа запущена")
 while True:
