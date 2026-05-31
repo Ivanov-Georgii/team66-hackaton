@@ -52,12 +52,4 @@ echo ""
 echo "Всего файлов: $total"
 fi
 echo ""
-echo "Запустить тесты?"
-echo "1) Да"
-echo "2) Нет"
-read ans
-if [ "$ans"="1" ]; then
-  pytest tests/
-fi
-echo ""
 echo "Работа завершена"
