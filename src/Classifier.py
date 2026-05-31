@@ -152,4 +152,3 @@ class Classifier:
         targetFolder = self.pathCat.get(categoryKey, self.pathCat["прочее"])
         shutil.move(str(filePath), str(targetFolder))
         logging.info(f"Файл {name} отправлен в категорию {categoryKey}")
-        print("Файл " + name + " отправлен в " + categoryKey)
