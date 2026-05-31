@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 import shutil
+import logging
 
 class Classifier:
     def __init__(self):
@@ -79,6 +80,7 @@ class Classifier:
         for line in lines:
             if line.strip() != "":
                 self.whitelist.append(line.strip())
+        logging.info(f"Загружен белый список: {len(self.whitelist)} адресов")
 
     def extract_words(self, text: str) -> list:
         text = text.lower().replace('ё', 'е')
@@ -86,7 +88,7 @@ class Classifier:
         text = text.lower().replace('как ', 'как')
         text = text.lower().replace('что делать', 'чтоделать')
         text = text.lower().replace('возможно ли', 'возможноли')
-        text = text.lower().replace('учетная запись', 'учетнаязапись')
+        text = text.lower().replace('учетная запись', '')
         words = re.findall(r'[а-яa-z]{3,}', text)
         return list(words)
 
@@ -108,12 +110,15 @@ class Classifier:
         for word in bodyWords:
             wordScore = self.calculate_word_score(word, categoryName)
             score += wordScore * 1
+        logging.info(f"Категория '{categoryName}': итоговый балл = {score}")
         return score
 
     def classify(self, subject: str = "", body: str = "", sender: str = "") -> str:
         if sender in self.whitelist:
+            logging.info("Адрес отправителя находится в белом списке, поэтому выбираем категорию 'важное'")
             return "важное"
         if "noreply" in sender or "no-reply" in sender:
+            logging.info("Письмо отправителя не требует ответа, поэтому выбираем категорию 'автоответчики/noreply сообщения'")
             return "автоответчики/noreply сообщения"
         subjectWords = self.extract_words(subject)
         bodyWords = self.extract_words(body)
@@ -121,6 +126,7 @@ class Classifier:
             if priorityCategory in self.categories:
                 score = self.calculate_category_score(priorityCategory,subjectWords, bodyWords)
                 if score >= self.minscore:
+                    logging.info(f"Выбираем категорию {priorityCategory} (балл: {score})")
                     return priorityCategory
 
         scores = {}
@@ -131,15 +137,19 @@ class Classifier:
             if score > 0:
                 scores[categoryName] = score
         if not scores:
+            logging.info("Нет совпадений, поэтому выбираем категорию 'прочее'")
             return "прочее"
 
         bestCategory = max(scores.keys(), key=lambda c: scores[c])
         bestScore = scores[bestCategory]
         if bestScore < self.minscore:
+            logging.info(f"Выбираем категорию 'прочее' (максимальный балл {bestScore} ниже порога {self.minscore})")
             return "прочее"
+        logging.info(f"Выбираем наиболее подходящую категорию {bestCategory} (балл: {bestScore})")
         return bestCategory
 
     def move_file_to_category(self, filePath: Path, categoryKey: str, name:str):
         targetFolder = self.pathCat.get(categoryKey, self.pathCat["прочее"])
         shutil.move(str(filePath), str(targetFolder))
+        logging.info(f"Файл {name} отправлен в категорию {categoryKey}")
         print("Файл " + name + " отправлен в " + categoryKey)
