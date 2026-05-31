@@ -20,6 +20,8 @@ class Cleaner:
         for file in self.trash.iterdir():
             if not file.is_file():
                 continue
+            if file.name == ".gitkeep":
+                continue
             file.unlink()
         print("Корзина очищена")
 
