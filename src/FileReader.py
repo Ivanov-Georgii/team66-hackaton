@@ -62,9 +62,5 @@ class FileReader:
             except:
                 logging.error(f"Файл {file.name} не удалось прочитать, поэтому он отправлен в категорию 'несортируемые'")
                 print("Файл " + file.name + " отправлен в несортируемые")
-                try:
-                    file.rename(self.unreadable / file.name)
-
-                except:
-                    pass
+                shutil.move(str(file), str(self.unreadable / file.name))
         return data
