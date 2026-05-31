@@ -5,7 +5,8 @@ from Cleaner import *
 from pathlib import *
 import logging
 
-logging.basicConfig(filename="../Logs/run.log", encoding="utf-8", level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+logging.basicConfig(filename="../Logs/run.log", encoding="utf-8", level=logging.INFO,
+                    format="%(asctime)s %(levelname)s %(message)s", filemode="w")
 
 print("Здравствуйте, программа запущена")
 logging.info("Программа запущена")
