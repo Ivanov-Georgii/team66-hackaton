@@ -15,7 +15,7 @@ echo "1) Да"
 echo "2) Нет"
 read ans
 if [ "$ans" = "1" ]; then
-    find SortedInbox -type f ! -name "*.git" -delete
+    find SortedInbox -type f ! -name "*.gitkeep" -delete
     echo "Папки очищены."
 fi
 echo ""
