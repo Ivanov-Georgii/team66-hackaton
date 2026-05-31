@@ -6,9 +6,9 @@ class Cleaner:
     def __init__(self):
         self.sortedInbox = Path("../SortedInbox")
         self.trash = Path("../Trash")
-        logging.info("Класс Cleaner запущен")
 
     def clean(self):
+        logging.info("Начало перемещения файлов в корзину")
         for folder in self.sortedInbox.iterdir():
             for file in folder.iterdir():
                 if not file.is_file():
@@ -20,6 +20,7 @@ class Cleaner:
         print("Все файлы перемещены в корзину")
 
     def empty_trash(self):
+        logging.info("Начало очистки корзины")
         for file in self.trash.iterdir():
             if not file.is_file():
                 continue
@@ -30,6 +31,7 @@ class Cleaner:
         print("Корзина очищена")
 
     def cleaner(self):
+        logging.info("Открыто меню очистки")
         while True:
             print("Введите номер желаемого действия: ")
             print(" (1) Переместить отсортированный ящик в корзину")
