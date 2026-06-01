@@ -28,14 +28,14 @@ class FileReader:
                     else:
                         count+=1
                         if (line.find("subject:") == 0 or line.find("тема:") == 0 or line.find("tema:") == 0) and iterSubject == False:
-                            importantInfo[0] = ("Subject", line[line.find(":") + 1:])
+                            importantInfo[0] = ("Subject", line[line.find(":") + 1:].strip())
                             bodyStart = count
                             iterSubject = True
                         if (line.find("from:") == 0 or line.find("от кого:") == 0 or line.find("ot kogo:") == 0) and iterAdress == False:
                             if line.count("<") > 0:
-                                importantInfo[1] = ("From", line[line.find("<") + 1: line.find(">")])
+                                importantInfo[1] = ("From", line[line.find("<") + 1: line.find(">")].strip())
                             else:
-                                importantInfo[1] = ("From", line[line.find(":") + 1:])
+                                importantInfo[1] = ("From", line[line.find(":") + 1:].strip())
                             bodyStart = count
                             iterAdress = True
                 if not iterSubject:
@@ -51,7 +51,7 @@ class FileReader:
                         bodyStart -= 1
                         if bodyStart<0:
                             body+=line+" "
-                importantInfo[2] = ("Body",body)
+                importantInfo[2] = ("Body",body.strip())
                 importantInfo[3] = ("Name",file.name)
                 if not iterAdress:
                     shutil.move(str(file), str(self.unreadable / file.name))
@@ -62,9 +62,5 @@ class FileReader:
             except:
                 logging.error(f"Файл {file.name} не удалось прочитать, поэтому он отправлен в категорию 'несортируемые'")
                 print("Файл " + file.name + " отправлен в несортируемые")
-                try:
-                    file.rename(self.unreadable / file.name)
-
-                except:
-                    pass
+                shutil.move(str(file), str(self.unreadable / file.name))
         return data
