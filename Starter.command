@@ -1,4 +1,6 @@
 #!/bin/bash
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$ROOT" || exit 1
 echo "Добро пожаловать в автоматизированную систему обработки корпоративной почты"
 echo ""
 echo "Требуется ли установка pytest?"
@@ -20,7 +22,7 @@ if [ "$ans" = "1" ]; then
 fi
 echo ""
 echo "Запускаем программу..."
-cd src
+cd src || exit 1
 python3 main.py
 cd ..
 echo ""
@@ -42,14 +44,14 @@ if [ "$ans" = "1" ]; then
   echo ""
   echo "Important : $important"
   echo "Incidents : $incidents"
-  echo "Noreply.  : $noreply"
+  echo "Noreply   : $noreply"
   echo "Other     : $other"
   echo "Questions : $questions"
   echo "Security  : $security"
   echo "Spam      : $spam"
   echo "Unreadable: $unreadable"
-echo ""
-echo "Всего файлов: $total"
+  echo ""
+  echo "Всего файлов: $total"
 fi
 echo ""
 echo "Работа завершена"
