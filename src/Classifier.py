@@ -74,14 +74,6 @@ class Classifier:
             }
         }
         self.priorityCategories = ["спам", "автоответчики/noreply сообщения"]
-        self.whitelist = []
-        whitelistPath = Path("UserInfo/white_list.txt")
-        if whitelistPath.exists():
-            lines = whitelistPath.read_text(encoding="utf-8").splitlines()
-            for line in lines:
-                if line.strip() != "":
-                    self.whitelist.append(line.strip())
-            logging.info(f"Загружен белый список: {len(self.whitelist)} адресов")
 
     def extract_words(self, text: str) -> list:
         text = text.lower().replace('ё', 'е')
@@ -115,7 +107,15 @@ class Classifier:
         return score
 
     def classify(self, subject: str = "", body: str = "", sender: str = "") -> str:
-        if sender in self.whitelist:
+        whitelist = []
+        whitelistPath = Path("../UserInfo/white_list.txt")
+        if whitelistPath.exists():
+            lines = whitelistPath.read_text(encoding="utf-8").splitlines()
+            for line in lines:
+                if line.strip() != "":
+                    whitelist.append(line.strip())
+            logging.info(f"Загружен белый список: {len(whitelist)} адресов")
+        if sender in whitelist:
             logging.info("Адрес отправителя находится в белом списке, поэтому выбираем категорию 'важное'")
             return "важное"
         if "noreply" in sender or "no-reply" in sender:
