@@ -2,24 +2,29 @@ from src.FileReader import *
 import pytest
 from pathlib import Path
 
-frd = FileReader('..\TestFolder')
+frd = FileReader('TestFolder')
 
 
 def test1():
-    frd.unreadable = Path("TestFolder/Unreadable")
+    frd.unreadable = Path("SortedInbox/Unreadable")
     result = frd.read_files()
-    assert result[0][0] == ("Subject", " test")
-    assert result[0][1] == ("From", " test@mail.com")
+    found = False
+    for item in result:
+        if item[3][1] == "mail1.txt":
+            assert item[0] == ("Subject", "test")
+            assert item[1] == ("From", "test@mail.com")
+            found = True
+    assert found
 
 
 def test2():
-    frd.unreadable = Path("TestFolder/Unreadable")
+    frd.unreadable = Path("SortedInbox/Unreadable")
     frd.read_files()
-    moved_file = Path("TestFolder/Unreadable/mail2.txt")
-    assert moved_file.exists() == False
+    moved_file = Path("SortedInbox/Unreadable/mail2.txt")
+    assert moved_file.exists()
 
 def test3():
-    frd.unreadable = Path("TestFolder/Unreadable")
+    frd.unreadable = Path("SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
@@ -30,7 +35,7 @@ def test3():
 
 
 def test4():
-    frd.unreadable = Path("TestFolder/Unreadable")
+    frd.unreadable = Path("SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
@@ -41,7 +46,7 @@ def test4():
 
 
 def test5():
-    frd.unreadable = Path("TestFolder/Unreadable")
+    frd.unreadable = Path("SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:

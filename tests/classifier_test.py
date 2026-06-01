@@ -12,7 +12,7 @@ def test_extract_words():
 
 def test_calculate_word_score2():
     key_signals = [
-                    "инцидент", "сбой", "недоступ", "упал", "критич", "останов"
+                    "инцидент", "сбой", "недоступ", "упал", "критич", "останов",
                     "авари", "краш", "срочно", "перегруз", "массов"
                 ]
     for signal in key_signals:
@@ -22,7 +22,7 @@ def test_calculate_word_score2():
 
 def test_calculate_word_score1():
     default_signals = [
-                    "останов", "неоткрыва", "неработа", "слома", "тормоз"
+                    "неоткрыва", "неработа", "слома", "тормоз",
                     "незагружа", "неотвеча", "переустанов"
                 ]
     for signal in default_signals:
@@ -56,13 +56,11 @@ def test_classify2():
 
 
 def test_classify3():
-    def test_classify_incident_in_subject():
         result = clf.classify(subject="критический сбой базы данных", body="", sender="admin@company.com")
         assert result == "инциденты"
 
 
 def test_classify4():
-    def test_classify_question_request():
         result = clf.classify(subject="прошу выдать доступ к компьютеру", body="", sender="user@company.com")
         assert result == "вопросы/просьбы"
 

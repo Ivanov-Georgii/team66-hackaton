@@ -23,8 +23,8 @@ class Classifier:
                     "авари", "краш", "срочно", "перегруз", "массов"
                 ],
                 "обычные сигналы": [
-                    "неоткрыва", "неработа", "слома", "тормоз", "переустанов"
-                    "незагружа", "неотвеча"
+                    "неоткрыва", "неработа", "слома", "тормоз",
+                    "незагружа", "неотвеча", "переустанов"
                 ]
             },
             "спам": {
@@ -75,12 +75,13 @@ class Classifier:
         }
         self.priorityCategories = ["спам", "автоответчики/noreply сообщения"]
         self.whitelist = []
-        whitelistPath = Path("../UserInfo/white_list.txt")
-        lines = whitelistPath.read_text(encoding="utf-8").splitlines()
-        for line in lines:
-            if line.strip() != "":
-                self.whitelist.append(line.strip())
-        logging.info(f"Загружен белый список: {len(self.whitelist)} адресов")
+        whitelistPath = Path("UserInfo/white_list.txt")
+        if whitelistPath.exists():
+            lines = whitelistPath.read_text(encoding="utf-8").splitlines()
+            for line in lines:
+                if line.strip() != "":
+                    self.whitelist.append(line.strip())
+            logging.info(f"Загружен белый список: {len(self.whitelist)} адресов")
 
     def extract_words(self, text: str) -> list:
         text = text.lower().replace('ё', 'е')

@@ -11,7 +11,7 @@ class FileReader:
     def read_files(self):
         data = []
         for file in self.folder.iterdir():
-            if not file.is_file():
+            if not file.is_file() or file.name.startswith("."):
                 continue
             try:
                 text = file.read_text(encoding="utf-8")
