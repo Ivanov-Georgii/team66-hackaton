@@ -1,12 +1,10 @@
 from src.FileReader import *
-import pytest
 from pathlib import Path
-
-frd = FileReader('TestFolder')
 
 
 def test1():
-    frd.unreadable = Path("SortedInbox/Unreadable")
+    frd = FileReader('../TestFolder')
+    frd.unreadable = Path("../SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
@@ -18,13 +16,20 @@ def test1():
 
 
 def test2():
-    frd.unreadable = Path("SortedInbox/Unreadable")
+    frd = FileReader('../TestFolder')
+    frd.unreadable = Path("../SortedInbox/Unreadable")
     frd.read_files()
-    moved_file = Path("SortedInbox/Unreadable/mail2.txt")
+    moved_file = Path("../SortedInbox/Unreadable/mail2.txt")
     assert moved_file.exists()
+    shutil.move(
+        "../SortedInbox/Unreadable/mail2.txt",
+        "../TestFolder/mail2.txt"
+    )
+
 
 def test3():
-    frd.unreadable = Path("SortedInbox/Unreadable")
+    frd = FileReader('../TestFolder')
+    frd.unreadable = Path("../SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
@@ -35,7 +40,8 @@ def test3():
 
 
 def test4():
-    frd.unreadable = Path("SortedInbox/Unreadable")
+    frd = FileReader('../TestFolder')
+    frd.unreadable = Path("../SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
@@ -46,7 +52,8 @@ def test4():
 
 
 def test5():
-    frd.unreadable = Path("SortedInbox/Unreadable")
+    frd = FileReader('../TestFolder')
+    frd.unreadable = Path("../SortedInbox/Unreadable")
     result = frd.read_files()
     found = False
     for item in result:
