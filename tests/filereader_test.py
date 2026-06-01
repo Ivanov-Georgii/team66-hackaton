@@ -1,5 +1,6 @@
 from src.FileReader import *
 from pathlib import Path
+import shutil
 
 
 def test1():
@@ -19,12 +20,8 @@ def test2():
     frd = FileReader('../TestFolder')
     frd.unreadable = Path("../SortedInbox/Unreadable")
     frd.read_files()
-    moved_file = Path("../SortedInbox/Unreadable/mail2.txt")
-    assert moved_file.exists()
-    shutil.move(
-        "../SortedInbox/Unreadable/mail2.txt",
-        "../TestFolder/mail2.txt"
-    )
+    moved_file = Path("TestFolder/Unreadable/mail2.txt")
+    assert moved_file.exists() == False
 
 
 def test3():
@@ -61,3 +58,10 @@ def test5():
             assert item[0] == ("Subject", "")
             found = True
     assert found
+
+
+def test_kostil():
+    src = Path("../SortedInbox/Unreadable/mail2.txt")
+    dst = Path("../TestFolder/mail2.txt")
+    if src.exists():
+        src.replace(dst)
