@@ -74,7 +74,7 @@ class Settings:
                 for line in lines:
                     if line.strip() != "":
                         emails.append(line.strip())
-                logging.info("Текущий белый список: ", *emails)
+                logging.info("Текущий белый список: " + ", ".join(emails))
                 while True:
                     print("Введите номер желаемого действия: ")
                     print(" (1) Показать текущий список")
@@ -91,12 +91,12 @@ class Settings:
                             print("Текущий белый список:")
                             for i in range(len(emails)):
                                 print(i+1, ") ", emails[i], sep="")
-                            logging.info("Текущий белый список: ", *emails)
+                            logging.info("Текущий белый список: " + ", ".join(emails))
                     elif userChoise2 == "2":
                         logging.info("Пользователь выбрал '(2) Добавить адрес'")
                         print("Введите email-адрес для добавления: ")
                         newEmail = input().strip().lower()
-                        logging.info("Пользователь вввёл адрес ", newEmail)
+                        logging.info("Пользователь вввёл адрес " + ", ".join(newEmail))
                         if "@" not in newEmail or "." not in newEmail:
                             print("Ошибка: некорректный формат email")
                             logging.error("Ошибка: некорректный формат email")
@@ -118,7 +118,7 @@ class Settings:
                                 print("(", i+1, ") ", emails[i], sep="")
                             print("Введите номер адреса для удаления: ")
                             userChoise3 = input()
-                            logging.info("Пользователь вввёл адрес ", userChoise3)
+                            logging.info("Пользователь вввёл адрес " + ", ".join(userChoise3))
                             if userChoise3.isdigit() and 1 <= int(userChoise3) <= len(emails):
                                 removedEmail = emails.pop(int(userChoise3)-1)
                                 print("Адрес удалён: " + removedEmail)
