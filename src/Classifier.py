@@ -88,7 +88,7 @@ class Classifier:
         text = text.lower().replace('как ', 'как')
         text = text.lower().replace('что делать', 'чтоделать')
         text = text.lower().replace('возможно ли', 'возможноли')
-        text = text.lower().replace('учетная запись', '')
+        text = text.lower().replace('учетная запись', 'учетнаязапись')
         words = re.findall(r'[а-яa-z]{3,}', text)
         return list(words)
 

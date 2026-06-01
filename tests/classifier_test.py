@@ -6,7 +6,7 @@ clf = Classifier()
 
 
 def test_extract_words():
-    result = clf.extract_words("не отчёт как что делать возможно ли учётная запись")
+    result = clf.extract_words("не отчёт как что делать возможно ли учетная запись")
     assert result == ["неотчет", "какчтоделать", "возможноли", "учетнаязапись"]
 
 
